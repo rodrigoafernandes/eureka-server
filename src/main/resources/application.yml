@@ -1,0 +1,21 @@
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+security:
+  basic:
+    enabled: true
+  user:
+    name: abutresClient
+    password: T!0El$0n
+logging:
+  level:
+    com.netflix.eureka: OFF
+    com.netflix.discovery: OFF
+    
+---
+spring:
+  profiles: dev
+  
+server:
+  port: 8761
