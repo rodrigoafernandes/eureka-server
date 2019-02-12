@@ -3,7 +3,6 @@ node {
     def mvnHome
 
     stage("Clone project $PROJECT") {
-        sleep(30)
         println ("Clone $PROJECT from SCM")
     }
 
@@ -17,6 +16,7 @@ node {
 
     stage('Quality Gates') {
         println ('Send code to analisys on SONAR')
+        currentBuild.result = "FAILED"
     }
 
     stage('Push image to Registry') {
