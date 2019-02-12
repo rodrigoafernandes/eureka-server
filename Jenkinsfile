@@ -8,7 +8,6 @@ node {
         checkout([$class: 'GitSCM',
                     userRemoteConfigs: [[url: "$REPO_GIT"]],
                     branches: [[name: "$BRANCH_NAME"]],
-                    credentialsId: 'github-jenkins',
                     clean: false,
                     extensions: [[$class: 'SubmoduleOption',
                                     disableSubmodules: false,
