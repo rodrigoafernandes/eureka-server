@@ -6,7 +6,7 @@ security:
   basic:
     enabled: true
   user:
-    name: abutresClient
+    name: abutresRegister
     password: T!0El$0n
 logging:
   level:
