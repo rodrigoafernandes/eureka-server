@@ -1,9 +1,26 @@
 node {
+    def REPO_GIT = "https://github.com/rodrigoafernandes/eureka-server.git"
+    def BRANCH_NAME = "master"
     def PROJECT = "eureka-server"
     def mvnHome
 
     stage("Clone project $PROJECT") {
-        println ("Clone $PROJECT from SCM")
+        checkout([$class: 'GitSCM',
+                    userRemoteConfigs: [[url: "$REPO_GIT"]],
+                    branches: [[name: "$BRANCH_NAME"]],
+                    credentialsId: '5d0b7fd5-abfa-4738-a181-c89cd6d91599',
+                    clean: false,
+                    extensions: [[$class: 'SubmoduleOption',
+                                    disableSubmodules: false,
+                                    parentCredentials: false,
+                                    recursiveSubmodules: true,
+                                    reference: '',
+                                    trackingSubmodules: false]],
+                    doGenerateSubmoduleConfigurations: false,
+                    submoduleCfg: []
+                ]
+        )
+
     }
 
     stage("Build $PROJECT") {
@@ -16,7 +33,6 @@ node {
 
     stage('Quality Gates') {
         println ('Send code to analisys on SONAR')
-        currentBuild.result = "FAILED"
     }
 
     stage('Push image to Registry') {
