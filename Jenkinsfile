@@ -3,6 +3,7 @@ node {
     def BRANCH_NAME = "master"
     def PROJECT = "eureka-server"
     def mvnHome
+    def TAG = sh(script: "env | grep gitlabSourceBranch | sed -e 's/[^0-9 .]//ig'", returnStdout: true).trim()
 
     stage("Clone project $PROJECT") {
         checkout([$class: 'GitSCM',
@@ -19,11 +20,14 @@ node {
                     submoduleCfg: []
                 ]
         )
-
     }
 
     stage("Build $PROJECT") {
-        println ("Maven build on $PROJECT")
+        if (TAG) {
+            println ("Maven build on $PROJECT:$TAG")
+        } else {
+            println ("Maven build on $PROJECT")
+        }
     }
 
     stage("Test $PROJECT") {
