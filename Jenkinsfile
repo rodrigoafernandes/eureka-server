@@ -8,7 +8,7 @@ node {
     }
 
     stage("Build $PROJECT") {
-        println ('Maven build on $PROJECT')
+        println ("Maven build on $PROJECT")
     }
 
     stage("Test $PROJECT") {
