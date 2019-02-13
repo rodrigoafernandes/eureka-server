@@ -74,7 +74,7 @@ node {
         currentBuild.result = "FAILED"
         throw error
     } finally {
-        sh(script: "rm $WORKSPACE/$PROJECT")
+        sh(script: "rm $WORKSPACE/eureka-server")
         notifyBuild("", currentBuild.result)
     }
 
