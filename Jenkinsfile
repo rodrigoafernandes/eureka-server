@@ -54,8 +54,11 @@ node {
                 -Dsonar.sources=$WORKSPACE/src \
                 -Dsonar.login=b12fd5ba53edf35331d88f0579f501ed5d3f142d \
                 -Dsonar.java.binaries=$WORKSPACE/target; sleep 3")
-            def SONAR_STATUS = sh(script: "curl -qsG $SONARQUBE_SERVER/api/qualitygates/project_status?projectKey=$SONARQUBE_PKEY | jq -r .projectStatus.status", returnStdout: true).trim()
-            if ( SONAR_STATUS == "ERROR") {
+            sh(script: "curl -q -s -o $WORKSPACE/sonar_status.txt $SONARQUBE_SERVER/api/qualitygates/project_status?projectKey=$SONARQUBE_PKEY")
+
+            def SONAR_STATUS = sh(script: "cat $WORKSPACE/sonar_status.txt | cut -c 29-30", returnStdout: true).trim()
+
+            if ( SONAR_STATUS != "OK") {
                 message = "THE CODE WAS NOT APPROVED BY SONARQUBE, GO CHECK -> $SONARQUBE_DASHBOARD"
                 notifyBuild(message, "SONARQUBE")
             }
