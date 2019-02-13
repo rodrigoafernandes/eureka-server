@@ -57,10 +57,12 @@ node {
             sh(script: "curl -q -s -o $WORKSPACE/sonar_status.txt $SONARQUBE_SERVER/api/qualitygates/project_status?projectKey=$SONARQUBE_PKEY")
 
             def SONAR_STATUS = sh(script: "cat $WORKSPACE/sonar_status.txt | cut -c 29-30", returnStdout: true).trim()
-
+            
             if ( SONAR_STATUS != "OK") {
                 message = "THE CODE WAS NOT APPROVED BY SONARQUBE, GO CHECK -> $SONARQUBE_DASHBOARD"
                 notifyBuild(message, "SONARQUBE")
+            } else {
+                notifyBuild("THE CODE WAS APPROVED BY SONARQUBE, GO CHECK -> $SONARQUBE_DASHBOARD", "INFO")
             }
         }
 
