@@ -70,30 +70,30 @@ node {
         notifyBuild("", currentBuild.result)
     }
 
-    def notifyBuild(String message, String buildStatus = 'STARTED') {
-        def SLACK_URL = "https://gigiodevsoftware.slack.com/services/hooks/jenkins-ci/"
-        def SLACK_TOKEN = "S8HLM5gtOx64tkN0eqCi7X3K"
-        def SLACK_CHANNEL = "#jenkins"
+}
 
-        buildStatus = buildStatus ?: 'SUCCESSFUL'
-        def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
-        def summary = "${subject} (${env.JOB_URL})"
+def notifyBuild(String message, String buildStatus = 'STARTED') {
+    def SLACK_URL = "https://gigiodevsoftware.slack.com/services/hooks/jenkins-ci/"
+    def SLACK_TOKEN = "S8HLM5gtOx64tkN0eqCi7X3K"
+    def SLACK_CHANNEL = "#jenkins"
 
-        if (buildStatus == 'STARTED') {
-            colorCode = '#FFFF00' // Yellow
-        } else if (buildStatus == 'SUCCESSFUL' || buildStatus == 'SUCCESS') {
-            colorCode = '#00FF00' // Green
-        } else if (buildStatus == 'INFO') {
-            colorCode = '#0080FF' // Blue
-        } else {
-            colorCode = '#FF0000' // Red
-        }
+    buildStatus = buildStatus ?: 'SUCCESSFUL'
+    def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
+    def summary = "${subject} (${env.JOB_URL})"
 
-        slackSend (color:"${colorCode}",
-            baseUrl: SLACK_URL,
-            token: SLACK_TOKEN,
-            channel: SLACK_CHANNEL,
-            message: "${summary} ${message}")
+    if (buildStatus == 'STARTED') {
+        colorCode = '#FFFF00' // Yellow
+    } else if (buildStatus == 'SUCCESSFUL' || buildStatus == 'SUCCESS') {
+        colorCode = '#00FF00' // Green
+    } else if (buildStatus == 'INFO') {
+        colorCode = '#0080FF' // Blue
+    } else {
+        colorCode = '#FF0000' // Red
     }
 
+    slackSend (color:"${colorCode}",
+        baseUrl: SLACK_URL,
+        token: SLACK_TOKEN,
+        channel: SLACK_CHANNEL,
+        message: "${summary} ${message}")
 }
