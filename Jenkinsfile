@@ -9,7 +9,7 @@ node {
 
         notifyBuild(message)
 
-        stage("Clone project") {
+        stage('Clone project') {
             checkout([$class: 'GitSCM',
                         userRemoteConfigs: [[url: "$REPO_GIT", credentialsId: '5d0b7fd5-abfa-4738-a181-c89cd6d91599']],
                         branches: [[name: "$BRANCH_NAME"]],
@@ -26,7 +26,7 @@ node {
             )
         }
 
-        stage("Maven Build") {
+        stage('Maven Build') {
             sh """
                 export PATH=/usr/local/bin:/usr/bin:/bin:$mvnHome/bin
                 mvn -P nexus clean package -DskipTests
@@ -34,7 +34,7 @@ node {
 
         }
 
-        stage("Unit Tests") {
+        stage('Unit Tests') {
             sh """
                 export PATH=/usr/local/bin:/usr/bin:/bin:$mvnHome/bin
                 mvn test
@@ -43,7 +43,7 @@ node {
 
         stage('Quality Gates') {
             message = "Send Code To Sonarqube"
-            notifyBuild(message, "SONARQUBE")
+            notifyBuild(message, "INFO")
         }
 
         stage('Push image to Registry') {
@@ -74,6 +74,7 @@ node {
         currentBuild.result = "FAILED"
         throw error
     } finally {
+        sh(script: "rm $WORKSPACE/$PROJECT")
         notifyBuild("", currentBuild.result)
     }
 
@@ -81,8 +82,8 @@ node {
 
 def notifyBuild(String message, String buildStatus = 'STARTED') {
     def SLACK_URL = "https://gigiodevsoftware.slack.com/services/hooks/jenkins-ci/"
-    def SLACK_TOKEN = "S8HLM5gtOx64tkN0eqCi7X3K"
-    def SLACK_CHANNEL = "#jenkins"
+    def SLACK_TOKEN = "kAfbdUFVo3SEntGs71gHS3mF"
+    def SLACK_CHANNEL = "#eureka-server"
 
     buildStatus = buildStatus ?: 'SUCCESSFUL'
     def subject = "${buildStatus}: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'"
