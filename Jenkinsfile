@@ -4,7 +4,13 @@ node {
     try {
         def REPO_GIT = "https://github.com/rodrigoafernandes/eureka-server.git"
         def BRANCH_NAME = "master"
-        def mvnHome = tool 'maven-jenkins';
+        def mvnHome = tool 'maven-jenkins'
+        def sonarHome = tool 'sonarqube'
+        def SONARQUBE_BIN = "$sonarHome/bin"
+        def SONARQUBE_SERVER = "http://159.203.83.253:5555"
+        def SONARQUBE_PKEY = "$PROJECT"
+        def SONARQUBE_DASHBOARD = "$SONARQUBE_SERVER/dashboard?id=$SONARQUBE_PKEY"
+
 
         message = "PIPELINE STARTED - Build $BUILD_NUMBER"
 
@@ -43,8 +49,16 @@ node {
         }
 
         stage('Quality Gates') {
-            message = "Send Code To Sonarqube"
-            notifyBuild(message, "INFO")
+            sh("$SONARQUBE_BIN/sonar-scanner -Dsonar.host.url=$SONARQUBE_SERVER \
+                -Dsonar.projectKey=$SONARQUBE_PKEY \
+                -Dsonar.sources=$WORKSPACE/src \
+                -Dsonar.login=81f000c88504e2407f789dbb5a10512d3c39fadd \
+                -Dsonar.java.binaries=$WORKSPACE/target; sleep 3")
+            def SONAR_STATUS = sh(script: "curl -qsG $SONARQUBE_SERVER/api/qualitygates/project_status?projectKey=$SONARQUBE_PKEY | jq -r .projectStatus.status", returnStdout: true).trim()
+            if ( SONAR_STATUS == "ERROR") {
+                message = "THE CODE WAS NOT APPROVED BY SONARQUBE, GO CHECK -> $SONARQUBE_DASHBOARD"
+                notifyBuild(message, "SONARQUBE")
+            }
         }
 
         stage('Push image to Registry') {
@@ -74,7 +88,6 @@ node {
         currentBuild.result = "FAILED"
         throw error
     } finally {
-        sh(script: "rm -R /var/jenkins_home/workspace/$PROJECT")
         notifyBuild("", currentBuild.result)
     }
 
