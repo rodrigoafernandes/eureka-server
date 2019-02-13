@@ -68,13 +68,12 @@ node {
 
         stage('Verify health-check') {
             println ("Rollout K8s(sh(\"/bin/kubectl-110 --kubeconfig ~jenkins/kube/.kube/config rollout status -n $PROJECT deployment/$PROJECT-deployment\")), then check status")
-            notifyBuild("", currentBuild.result)
         }
     } catch (error) {
         currentBuild.result = "FAILED"
         throw error
     } finally {
-        sh(script: "rm $WORKSPACE/eureka-server")
+        sh(script: "rm -R /var/jenkins_home/workspace/eureka-server")
         notifyBuild("", currentBuild.result)
     }
 
