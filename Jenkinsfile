@@ -3,7 +3,14 @@ node {
     def BRANCH_NAME = "master"
     def PROJECT = "eureka-server"
     def mvnHome = tool 'maven-jenkins';
-    stage("Clone project $PROJECT") {
+
+    stage('Environment definition') {
+        sh """
+            export PATH=/usr/local/bin:/usr/bin:/bin:$mvnHome/bin
+        """
+    }
+
+    stage("Clone project") {
         checkout([$class: 'GitSCM',
                     userRemoteConfigs: [[url: "$REPO_GIT", credentialsId: '5d0b7fd5-abfa-4738-a181-c89cd6d91599']],
                     branches: [[name: "$BRANCH_NAME"]],
@@ -20,16 +27,17 @@ node {
         )
     }
 
-    stage("Build $PROJECT") {
+    stage("Maven Build") {
         sh """
-            export PATH=/usr/local/bin:/usr/bin:/bin:$mvnHome/bin
             mvn -P nexus clean package -DskipTests
         """
 
     }
 
-    stage("Test $PROJECT") {
-        println ("Maven Junit tests on $PROJECT")
+    stage("Unit Tests") {
+        sh """
+            mvn test
+        """
     }
 
     stage('Quality Gates') {
