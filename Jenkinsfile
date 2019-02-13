@@ -4,12 +4,6 @@ node {
     def PROJECT = "eureka-server"
     def mvnHome = tool 'maven-jenkins';
 
-    stage('Environment definition') {
-        sh """
-            export PATH=/usr/local/bin:/usr/bin:/bin:$mvnHome/bin
-        """
-    }
-
     stage("Clone project") {
         checkout([$class: 'GitSCM',
                     userRemoteConfigs: [[url: "$REPO_GIT", credentialsId: '5d0b7fd5-abfa-4738-a181-c89cd6d91599']],
@@ -29,6 +23,7 @@ node {
 
     stage("Maven Build") {
         sh """
+            export PATH=/usr/local/bin:/usr/bin:/bin:$mvnHome/bin
             mvn -P nexus clean package -DskipTests
         """
 
@@ -36,6 +31,7 @@ node {
 
     stage("Unit Tests") {
         sh """
+            export PATH=/usr/local/bin:/usr/bin:/bin:$mvnHome/bin
             mvn test
         """
     }
