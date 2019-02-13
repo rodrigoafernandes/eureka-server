@@ -2,7 +2,7 @@ node {
     def REPO_GIT = "https://github.com/rodrigoafernandes/eureka-server.git"
     def BRANCH_NAME = "master"
     def PROJECT = "eureka-server"
-    def mvnHome
+    def mvnHome = tool 'maven-jenkins';
     stage("Clone project $PROJECT") {
         checkout([$class: 'GitSCM',
                     userRemoteConfigs: [[url: "$REPO_GIT", credentialsId: '5d0b7fd5-abfa-4738-a181-c89cd6d91599']],
@@ -22,7 +22,7 @@ node {
 
     stage("Build $PROJECT") {
         sh """
-            export PATH=/usr/local/bin:/usr/bin:/bin:/opt/maven/bin
+            export PATH=/usr/local/bin:/usr/bin:/bin:$mvnHome/bin
             mvn -P nexus clean package -DskipTests
         """
 
