@@ -1,8 +1,9 @@
 node {
+
+    def PROJECT = "eureka-server"
     try {
         def REPO_GIT = "https://github.com/rodrigoafernandes/eureka-server.git"
         def BRANCH_NAME = "master"
-        def PROJECT = "eureka-server"
         def mvnHome = tool 'maven-jenkins';
 
         message = "PIPELINE STARTED - Build $BUILD_NUMBER"
@@ -73,7 +74,7 @@ node {
         currentBuild.result = "FAILED"
         throw error
     } finally {
-        sh(script: "rm -R /var/jenkins_home/workspace/eureka-server")
+        sh(script: "rm -R /var/jenkins_home/workspace/$PROJECT")
         notifyBuild("", currentBuild.result)
     }
 
