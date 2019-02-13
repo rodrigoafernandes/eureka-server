@@ -52,7 +52,7 @@ node {
             sh("$SONARQUBE_BIN/sonar-scanner -Dsonar.host.url=$SONARQUBE_SERVER \
                 -Dsonar.projectKey=$SONARQUBE_PKEY \
                 -Dsonar.sources=$WORKSPACE/src \
-                -Dsonar.login=81f000c88504e2407f789dbb5a10512d3c39fadd \
+                -Dsonar.login=b12fd5ba53edf35331d88f0579f501ed5d3f142d \
                 -Dsonar.java.binaries=$WORKSPACE/target; sleep 3")
             def SONAR_STATUS = sh(script: "curl -qsG $SONARQUBE_SERVER/api/qualitygates/project_status?projectKey=$SONARQUBE_PKEY | jq -r .projectStatus.status", returnStdout: true).trim()
             if ( SONAR_STATUS == "ERROR") {
