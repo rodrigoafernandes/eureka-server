@@ -68,6 +68,8 @@ node {
 
         stage('Push image to Registry') {
             sh """
+                docker login -u d4r-p4s -p s3td4rp4sn3s 159.209.83.253:8082
+                docker login -u d4r-p4s -p s3td4rp4sn3s 159.209.83.253:8083
                 docker pull 159.203.83.253:8082/redis
             """
             println ("Build image of $PROJECT project and push to nexus private registry")
