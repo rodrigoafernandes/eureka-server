@@ -68,7 +68,7 @@ node {
 
         stage('Push image to Registry') {
             sh """
-                docker container ls
+                docker pull 159.203.83.253:8082/redis
             """
             println ("Build image of $PROJECT project and push to nexus private registry")
         }
