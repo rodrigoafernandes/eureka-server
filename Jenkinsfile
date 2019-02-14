@@ -67,6 +67,9 @@ node {
         }
 
         stage('Push image to Registry') {
+            sh """
+                docker container ls
+            """
             println ("Build image of $PROJECT project and push to nexus private registry")
         }
 
