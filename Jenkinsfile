@@ -17,7 +17,7 @@ node {
         notifyBuild(message)
 
         stage('Clone project') {
-            notifyBuild(sh(script: "env | grep gitlabSourceBranch | sed -e 's/[^0-9 .]//ig'", returnStdout: true).trim())
+            println(sh(script: "env | grep gitlabSourceBranch | sed -e 's/[^0-9 .]//ig'", returnStdout: true).trim())
             checkout([$class: 'GitSCM',
                         userRemoteConfigs: [[url: "$REPO_GIT", credentialsId: '5d0b7fd5-abfa-4738-a181-c89cd6d91599']],
                         branches: [[name: "$BRANCH_NAME"]],
