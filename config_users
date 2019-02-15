@@ -1,0 +1,24 @@
+docker run -d -p 8081-8083:8081-8083 --name nexus -v nexus-data:/nexus-data --network pavans-network sonatype/nexus3
+
+docker container run -d --name sonar-db -v mysql-sonar-data:/var/lib/postgresql/data --network pavans-network -e POSTGRES_PASSWORD=p4s-m3l-s4t -e POSTGRES_USER=sonar -e POSTGRES_DB=sonar 159.203.83.253:8082/postgres
+
+docker container run -d --name sonarqube -p 5555:9000 -v sonar-data:/opt/sonarqube -e sonar.jdbc.username=sonar -e sonar.jdbc.password=p4s-m3l-s4t -e sonar.jdbc.url=jdbc:postgresql://sonar-db:5432/sonar --network pavans-network 159.203.83.253:8082/sonarqube
+
+SONAR USER - s3r-j5s
+SONAR PASSWORD - j5ss3t
+SONAR TOKEN - b12fd5ba53edf35331d88f0579f501ed5d3f142d
+
+NEXUS Admin USER: admin
+Nexus Admin PWD: s3t-a11r-n3s
+Nexus Docker User: d4r-p4s
+Nexus Docker PWD: s3td4rp4sn3s
+Nexus Maven User: m3n-p4s
+Nexus Maven PWD: s3tm3np4sn3s
+
+docker login -u d4r-p4s -p s3td4rp4sn3s 159.203.83.253:8082(pull)
+
+docker login -u d4r-p4s -p s3td4rp4sn3s 159.203.83.253:8083(push)
+
+p4s-mvn-central
+
+https://repo1.maven.org/maven2/
