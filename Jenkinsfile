@@ -68,7 +68,7 @@ node {
 
         stage('Push image to Registry') {
             sh """
-                docker login -u d4r-p4s -p s3td4rp4sn3s localhost:8082
+                docker login -u ${env.DOCKER_REG_USR} -p ${env.dockerRG.PWD} ${env.DOCKER_REG_PROXY}
                 docker login -u d4r-p4s -p s3td4rp4sn3s localhost:8083
                 docker pull localhost:8082/redis
             """
