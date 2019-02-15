@@ -69,10 +69,10 @@ node {
         stage('Push image to Registry') {
             sh """
                 docker login -u ${env.DOCKER_REG_USR} -p ${env.DOCKER_REG_PWD} ${env.DOCKER_REG_PROXY}
-                docker login -u d4r-p4s -p s3td4rp4sn3s localhost:8083
-                docker pull localhost:8082/redis
+                docker login -u ${env.DOCKER_REG_USR} -p ${env.DOCKER_REG_PWD} ${DOCKER_REG_PRIV}
+                docker build -t ${env.DOCKER_REG_PRIV}/$PROJECT:${env.BUILD_NUMBER} -f docker/Dockerfile .
+                docker push ${env.DOCKER_REG_PRIV}/$PROJECT:${env.BUILD_NUMBER}
             """
-            println ("Build image of $PROJECT project and push to nexus private registry")
         }
 
         stage('Configure Centralized Environment Variables') {
