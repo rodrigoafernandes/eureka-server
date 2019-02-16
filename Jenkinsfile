@@ -10,30 +10,17 @@ node {
         def SONARQUBE_SERVER = "http://159.203.83.253:5555"
         def SONARQUBE_PKEY = "$PROJECT"
         def SONARQUBE_DASHBOARD = "$SONARQUBE_SERVER/dashboard?id=$SONARQUBE_PKEY"
-
+        def scmInfo = checkout scm
+        def TAG = sh (script: "echo ${scmInfo.GIT_BRANCH} | sed -e 's/[^0-9 .]//ig'", returnStdout: true).trim()
 
         message = "PIPELINE STARTED - Build $BUILD_NUMBER"
 
         notifyBuild(message)
 
-        stage('Clone project') {
-            scmInfo = checkout scm
-            notifyBuild ("Git Environments: BRANCH_NAME=${scmInfo.GIT_BRANCH}")
-            // checkout([$class: 'GitSCM',
-            //             userRemoteConfigs: [[url: "$REPO_GIT", credentialsId: '5d0b7fd5-abfa-4738-a181-c89cd6d91599']],
-            //             branches: [[name: "$BRANCH_NAME"]],
-            //             clean: false,
-            //             extensions: [[$class: 'SubmoduleOption',
-            //                             disableSubmodules: false,
-            //                             parentCredentials: false,
-            //                             recursiveSubmodules: true,
-            //                             reference: '',
-            //                             trackingSubmodules: false]],
-            //             doGenerateSubmoduleConfigurations: false,
-            //             submoduleCfg: []
-            //         ]
-            // )
-        }
+        // stage('Clone project') {
+            
+        //     TAG = sh (${scmInfo.GIT_BRANCH}
+        // }
 
         stage('Maven Build') {
             sh """
@@ -66,6 +53,8 @@ node {
             } else {
                 notifyBuild("THE CODE WAS APPROVED BY SONARQUBE, GO CHECK -> $SONARQUBE_DASHBOARD", "INFO")
             }
+
+            sh (script: "rm $WORKSPACE/sonar_status.txt")
         }
 
         stage('Push image to Registry') {
