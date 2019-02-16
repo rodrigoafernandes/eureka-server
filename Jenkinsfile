@@ -18,21 +18,21 @@ node {
 
         stage('Clone project') {
             scmInfo = checkout scm
-            println ("Git Environments: BRANCH_NAME=${scmInfo.GIT_BRANCH}")
-            checkout([$class: 'GitSCM',
-                        userRemoteConfigs: [[url: "$REPO_GIT", credentialsId: '5d0b7fd5-abfa-4738-a181-c89cd6d91599']],
-                        branches: [[name: "$BRANCH_NAME"]],
-                        clean: false,
-                        extensions: [[$class: 'SubmoduleOption',
-                                        disableSubmodules: false,
-                                        parentCredentials: false,
-                                        recursiveSubmodules: true,
-                                        reference: '',
-                                        trackingSubmodules: false]],
-                        doGenerateSubmoduleConfigurations: false,
-                        submoduleCfg: []
-                    ]
-            )
+            notifyBuild ("Git Environments: BRANCH_NAME=${scmInfo.GIT_BRANCH}")
+            // checkout([$class: 'GitSCM',
+            //             userRemoteConfigs: [[url: "$REPO_GIT", credentialsId: '5d0b7fd5-abfa-4738-a181-c89cd6d91599']],
+            //             branches: [[name: "$BRANCH_NAME"]],
+            //             clean: false,
+            //             extensions: [[$class: 'SubmoduleOption',
+            //                             disableSubmodules: false,
+            //                             parentCredentials: false,
+            //                             recursiveSubmodules: true,
+            //                             reference: '',
+            //                             trackingSubmodules: false]],
+            //             doGenerateSubmoduleConfigurations: false,
+            //             submoduleCfg: []
+            //         ]
+            // )
         }
 
         stage('Maven Build') {
