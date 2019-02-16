@@ -17,7 +17,8 @@ node {
         notifyBuild(message)
 
         stage('Clone project') {
-            println ("Git Environments: BRANCH_NAME=${env.BRANCH_NAME}, GIT_BRANCH=${GIT_BRANCH}")
+            scmInfo = checkout scm
+            println ("Git Environments: BRANCH_NAME=${scmInfo.GIT_BRANCH}")
             checkout([$class: 'GitSCM',
                         userRemoteConfigs: [[url: "$REPO_GIT", credentialsId: '5d0b7fd5-abfa-4738-a181-c89cd6d91599']],
                         branches: [[name: "$BRANCH_NAME"]],
