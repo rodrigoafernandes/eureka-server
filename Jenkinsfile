@@ -17,11 +17,6 @@ node {
 
         notifyBuild(message)
 
-        // stage('Clone project') {
-            
-        //     TAG = sh (${scmInfo.GIT_BRANCH}
-        // }
-
         stage('Maven Build') {
             sh """
                 export PATH=/usr/local/bin:/usr/bin:/bin:$mvnHome/bin
@@ -58,12 +53,23 @@ node {
         }
 
         stage('Push image to Registry') {
-            sh """
+
+            if (TAG) {
+                sh """
+                    docker login -u ${env.DOCKER_REG_USR} -p ${env.DOCKER_REG_PWD} ${env.DOCKER_REG_PROXY}
+                    docker login -u ${env.DOCKER_REG_USR} -p ${env.DOCKER_REG_PWD} ${DOCKER_REG_PRIV}
+                    docker build -t ${env.DOCKER_REG_PRIV}/$PROJECT:${TAG} -f docker/Dockerfile .
+                    docker push ${env.DOCKER_REG_PRIV}/$PROJECT:${TAG}
+                """
+            } else {
+               sh """
                 docker login -u ${env.DOCKER_REG_USR} -p ${env.DOCKER_REG_PWD} ${env.DOCKER_REG_PROXY}
                 docker login -u ${env.DOCKER_REG_USR} -p ${env.DOCKER_REG_PWD} ${DOCKER_REG_PRIV}
-                docker build -t ${env.DOCKER_REG_PRIV}/$PROJECT:${env.BUILD_NUMBER} -f docker/Dockerfile .
-                docker push ${env.DOCKER_REG_PRIV}/$PROJECT:${env.BUILD_NUMBER}
-            """
+                docker build -t ${env.DOCKER_REG_PRIV}/$PROJECT:latest -f docker/Dockerfile .
+                docker push ${env.DOCKER_REG_PRIV}/$PROJECT:latest
+            """ 
+            }
+
         }
 
         stage('Configure Centralized Environment Variables') {
