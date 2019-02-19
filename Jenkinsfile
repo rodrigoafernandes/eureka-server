@@ -54,20 +54,22 @@ node {
 
         stage('Push image to Registry') {
 
-            if (TAG) {
+            withCredentials([usernamePassword(credentialsId: 'jenkins-docker', usernameVariable: 'DOCKER_USR', passwordVariable: 'DOCKER_PASS')]) {
+                if (TAG) {
+                    sh """
+                        docker login -u $DOCKER_USR -p $DOCKER_PASS ${env.DOCKER_REG_PROXY}
+                        docker login -u $DOCKER_USR -p $DOCKER_PASS ${env.DOCKER_REG_PRIV}
+                        docker build -t ${env.DOCKER_REG_PRIV}/$PROJECT:${TAG} -f docker/Dockerfile .
+                        docker push ${env.DOCKER_REG_PRIV}/$PROJECT:${TAG}
+                    """
+                } else {
                 sh """
-                    docker login -u ${env.DOCKER_REG_USR} -p ${env.DOCKER_REG_PWD} ${env.DOCKER_REG_PROXY}
-                    docker login -u ${env.DOCKER_REG_USR} -p ${env.DOCKER_REG_PWD} ${DOCKER_REG_PRIV}
-                    docker build -t ${env.DOCKER_REG_PRIV}/$PROJECT:${TAG} -f docker/Dockerfile .
-                    docker push ${env.DOCKER_REG_PRIV}/$PROJECT:${TAG}
-                """
-            } else {
-               sh """
-                docker login -u ${env.DOCKER_REG_USR} -p ${env.DOCKER_REG_PWD} ${env.DOCKER_REG_PROXY}
-                docker login -u ${env.DOCKER_REG_USR} -p ${env.DOCKER_REG_PWD} ${DOCKER_REG_PRIV}
-                docker build -t ${env.DOCKER_REG_PRIV}/$PROJECT:latest -f docker/Dockerfile .
-                docker push ${env.DOCKER_REG_PRIV}/$PROJECT:latest
-            """ 
+                    docker login -u $DOCKER_USR -p $DOCKER_PASS ${env.DOCKER_REG_PROXY}
+                    docker login -u $DOCKER_USR -p $DOCKER_PASS ${DOCKER_REG_PRIV}
+                    docker build -t ${env.DOCKER_REG_PRIV}/$PROJECT:latest -f docker/Dockerfile .
+                    docker push ${env.DOCKER_REG_PRIV}/$PROJECT:latest
+                """ 
+                }
             }
 
         }
