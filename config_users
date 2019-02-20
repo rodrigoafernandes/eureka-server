@@ -4,6 +4,8 @@ docker container run -d --name sonar-db -v mysql-sonar-data:/var/lib/postgresql/
 
 docker container run -d --name sonarqube -p 5555:9000 -v sonar-data:/opt/sonarqube -e sonar.jdbc.username=sonar -e sonar.jdbc.password=p4s-m3l-s4t -e sonar.jdbc.url=jdbc:postgresql://sonar-db:5432/sonar --network pavans-network 159.203.83.253:8082/sonarqube
 
+docker container run -d -p 8500:8500 --name consul-dev -v consul-data:/consul consul agent -ui -client=0.0.0.0 -bind='{{ GetPrivateIP }}'
+
 SONAR USER - s3r-j5s
 SONAR PASSWORD - j5ss3t
 SONAR TOKEN - b12fd5ba53edf35331d88f0579f501ed5d3f142d
